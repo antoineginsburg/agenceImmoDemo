@@ -1,0 +1,43 @@
+ag_agenceimmo:
+    path: /
+    defaults: { _controller: AGAgenceimmoBundle:Immo:accueil }
+
+ag_agenceimmo_accueil:
+    path:    /agenceimmo
+    defaults: { _controller: AGAgenceimmoBundle:Immo:accueil }
+
+ag_agenceimmo_list :
+    path:   /agenceimmo/list/{type}
+    defaults:  { _controller: AGAgenceimmoBundle:Immo:list }
+
+ag_agenceimmo_add :
+    path:   /agenceimmo/add
+    defaults:  { _controller: AGAgenceimmoBundle:Immo:add }
+
+ag_agenceimmo_connexion :
+    path:   /agenceimmo/connexion
+    defaults:  { _controller: AGAgenceimmoBundle:Immo:connexion }
+
+ag_agenceimmo_view :
+    path:   /agenceimmo/view/{id}
+    defaults:  { _controller: AGAgenceimmoBundle:Immo:view }
+
+ag_agenceimmo_searchresult :
+    path:   /agenceimmo/searchresult/{search}
+    defaults:  { _controller: AGAgenceimmoBundle:Immo:search }
+
+ag_agenceimmo_edit:
+    path:   /agenceimmo/edit/{id}
+    defaults:  { _controller:AGAgenceimmoBundle:Immo:edit }
+
+ag_agenceimmo_delete:
+    path:   /agenceimmo/delete/{id}
+    defaults:  { _controller:AGAgenceimmoBundle:Immo:delete }
+
+ag_agenceimmo_suppr_img:
+    path:   /agenceimmo/supprimg/{id}
+    defaults:  { _controller:AGAgenceimmoBundle:Immo:supprimg }
+
+ag_agenceimmo_ajout_img:
+    path:   /agenceimmo/ajoutimg/{id}
+    defaults:  { _controller:AGAgenceimmoBundle:Immo:ajoutimg }

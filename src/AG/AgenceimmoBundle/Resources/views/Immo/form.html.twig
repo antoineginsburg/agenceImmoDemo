@@ -1,0 +1,263 @@
+{# src/AG/AgenceimmoBundle/Resources/views/Immo/form.html.twig #}
+
+<div class="well">
+	{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+		
+		{% if not form.vars.valid %}
+			{%if form_errors(form.prix) is not empty %}
+				<div class="form-group" id="prix_error">
+					 <label class="col-sm-4 control-label">Erreur dans le prix : </label>
+					 <div class="col-sm-4">
+						{{ form_errors(form.prix) }}
+					</div>
+				</div>
+			{%endif%}
+			{%if form_errors(form.surface) is not empty %}
+				<div class="form-group" id="surface_error">
+					 <label class="col-sm-4 control-label">Erreur dans la surface : </label>
+					 <div class="col-sm-4">
+						{{ form_errors(form.surface) }}
+					</div>
+				</div>
+			{%endif%}
+		{% endif %}
+		<div class="form-group">
+			{# Génération du label. #}
+			{{ form_label(form.typeimmobilier, "Selectionner le type de bien", {'label_attr': {'class': 'col-sm-4 control-label'}}) }}
+
+			<div class="col-sm-4">
+				{# Génération de l'input. #}
+				{{ form_widget(form.typeimmobilier, {'attr': {'class': 'form-control'}}) }}
+			</div>
+		</div>
+		
+		<div class="form-group">
+			{# Génération du label. #}
+			{{ form_label(form.denomination, "Descriptif du bien", {'label_attr': {'class': 'col-sm-4 control-label'}}) }}
+
+			<div class="col-sm-4">
+				{# Génération de l'input. #}
+				{{ form_widget(form.denomination, {'attr': {'class': 'form-control'}}) }}
+			</div>
+		</div>
+
+		<div class="form-group">
+			{# Génération du label. #}
+			{{ form_label(form.surface, "Surface du bien", {'label_attr': {'class': 'col-sm-4 control-label'}}) }}
+
+			<div class="col-sm-4">
+				{# Génération de l'input. #}
+				{{ form_widget(form.surface, {'attr': {'class': 'form-control'}}) }}
+			</div>
+		</div>
+		
+		<div class="form-group">
+			{# Génération du label. #}
+			{{ form_label(form.location, "Cochez la case si c'est une location", {'label_attr': {'class': 'col-sm-4 control-label'}}) }}
+
+			<div class="col-sm-4">
+				{# Génération de l'input. #}
+				{{ form_widget(form.location) }}
+			</div>
+		</div>
+
+		<div class="form-group">
+			{# Génération du label. #}
+			{{ form_label(form.nbPieces, "Nombre de pièces", {'label_attr': {'class': 'col-sm-4 control-label'}}) }}
+
+			<div class="col-sm-4">
+				{# Génération de l'input. #}
+				{{ form_widget(form.nbPieces, {'attr': {'class': 'form-control'}}) }}
+			</div>
+		</div>		
+
+		<div class="form-group">
+			{# Génération du label. #}
+			{{ form_label(form.annee, "Annee de construction", {'label_attr': {'class': 'col-sm-4 control-label'}}) }}
+
+			<div class="col-sm-4">
+				{# Génération de l'input. #}
+				{{ form_widget(form.annee, {'attr': {'class': 'form-control'}}) }}
+			</div>
+		</div>
+	
+		<div class="form-group">
+			{# Génération du label. #}
+			{{ form_label(form.prix, "prix du bien (achat ou loyer)", {'label_attr': {'class': 'col-sm-4 control-label'}}) }}
+
+			<div class="col-sm-4">
+				{# Génération de l'input. #}
+				{{ form_widget(form.prix, {'attr': {'class': 'form-control'}}) }}
+			</div>
+		</div>
+		
+		{{form_rest(form)}}
+
+	{{form_end(form)}}
+</div>
+
+	
+	{# On charge la bibliothèque jQuery. Ici, je la prends depuis le CDN google
+	   mais si vous l'avez en local, changez simplement l'adresse. #}
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+	{# Voici le script en question : #}
+	<script type="text/javascript">
+		
+		$(document).ready(function() 
+		{
+			{% if edit is not defined %}
+			
+				// On récupère la balise <div> en question qui contient l'attribut « data-prototype » qui nous intéresse.
+				var $container = $('div#ag_agenceimmobundle_immobilier_images');
+
+				//ajout antoine on supprimme le libellé Images se trouvant dans le div parent de container
+				$container.parent().closest('div').children().closest('label').remove();
+
+				// On ajoute un lien pour ajouter une nouvelle image
+				var $addLink = $('<div class="col-sm-4" style="text-align:right"><a href="#" id="add_image" class="btn btn-info">Ajouter une image</a></div>');
+
+				//on le met dans un div form-group
+				$addLink.wrap('<div class="form-group"></div>');
+				
+				//on met à la fin du container le lien
+				$container.append($addLink.parent());
+
+				// On ajoute un nouveau champ à chaque clic sur le lien d'ajout.
+				$addLink.click(function(e) 
+				{
+					addImage($container);
+					e.preventDefault(); // évite qu'un # apparaisse dans l'URL
+					return false;
+				});
+
+				// On définit un compteur unique pour nommer les champs qu'on va ajouter dynamiquement
+				var index = $container.find(':input').length;
+
+				// On ajoute un premier champ automatiquement s'il n'en existe pas déjà un (cas d'un nouveau bien immobilier par exemple).
+				if (index == 0) 
+				{
+					addImage($container);
+				}
+				else 
+				{
+					// Pour chaque iamge déjà existante, on ajoute un lien de suppression
+					$container.children('div').each(function() 
+					{
+						addDeleteLink($(this));
+					});
+				}
+
+				//on centre le bouton d'enregistrement (ajout antoine)
+				var $enregistre = $('button#ag_agenceimmobundle_immobilier_save');
+				$enregistre.wrap('<div class="text-center"></div>');
+				$enregistre.text("enregistrer");
+
+
+				
+				// La fonction qui ajoute un formulaire Image
+				function addImage($container) 
+				{
+					// Dans le contenu de l'attribut « data-prototype », on remplace :
+					// - le texte "__name__label__" qu'il contient par le label du champ
+					// - le texte "__name__" qu'il contient par le numéro du champ
+					var $prototype = $($container.attr('data-prototype').replace(/__name__label__/g, 'Image n°' + (index+1))
+					  .replace(/__name__/g, index));
+
+				
+					//debut ajout antoine 
+
+						//on vire le label "Image N°..."
+						var $labelAvirer = $prototype.children().closest('label');
+					
+						//on vire le label  "file"
+						var $labelAvirerBis=  $prototype.children().closest('div').children().children().closest('label');
+						$labelAvirerBis.remove();
+						$labelAvirer.remove();
+						
+						var $file = $prototype.children().closest('div').children().children();
+						
+						$file.wrap('<div class="col-sm-5"></div>');
+						//on le met dans le répertoire parent du container
+						
+						if(index == 0){
+							//on ajoute le bouton d'upload au div class = form-group 
+							//contenant le bouton ajouter une image  
+							$container.parent().find(".form-group").append($file.parent());
+						
+							// On ajoute le lien de suppression au div class = form-group
+							//contenant le bouton ajouter une image
+							addDeleteLink($container.parent().find(".form-group"));
+						}else{
+							//on ajoute un nouveau div class form-group avec une case vide (en dessous le bouton ajouter une image)
+							$container.append('<div class="form-group"><div class="col-sm-4" style="text-align:right">&nbsp;</div>');
+							
+							////on ajoute le bouton d'upload au div class = form-group que l'on vient de créer
+							$container.parent().find(".form-group").last().append($file.parent());
+						
+							// On ajoute le lien de suppression au div class = form-group que l'on vient de créer
+							addDeleteLink($container.parent().find(".form-group").last());
+						}
+						
+							
+
+					//fin ajout antoine
+
+
+					// Enfin, on incrémente le compteur pour que le prochain ajout se fasse avec un autre numéro
+					index++;
+
+				}
+
+				// La fonction qui ajoute un lien de suppression d'une image
+				function addDeleteLink($prototype) 
+				{
+					// Création du lien
+					$deleteLink = $('<a href="#" class="btn btn-danger">Supprimer</a>');
+
+					// on met le lien de suppression dans un div pour l'alignement
+					$deleteLink.wrap('<div class="col-sm-3"></div>');
+					
+					// Ajout du div contenant le lien de suppression
+					// dans le div class form-group 
+					$prototype.append($deleteLink.parent());
+
+					// Ajout du listener sur le clic du lien
+					$deleteLink.click(function(e) 
+					{
+						nbAjouter = $prototype.children().find('.btn-info').length;
+						
+						//si on a cliqué sur le lien de suppression de la  ligne contenant le bouton ajouter une image
+						//on supprime les deux cases contenant le lien de suppression et le bouton d'upload
+						if(nbAjouter == 1){
+							var cpt=1;
+							$prototype.children('div').each(function(){
+								if(cpt>1){
+								$(this).remove();
+								}
+								cpt++;
+							});
+							index--;
+							//alert("index = "+index);
+						}
+						//si on a pas cliqué sur le lien de suppression de la première ligne
+						//on supprimme toute la ligne à savoir tout le div class form-group
+						else{
+							$prototype.remove();
+							index--;
+							e.preventDefault(); // évite qu'un # apparaisse dans l'URL
+							return false;
+						}
+					});
+					
+				}
+			{% else %}
+				$('.form-group').last().next().remove();
+				//on centre le bouton d'enregistrement (ajout antoine)
+				var $enregistre = $('button#ag_agenceimmobundle_immobilier_save');
+				$enregistre.wrap('<div class="text-center"></div>');
+				$enregistre.text("enregistrer");
+			{% endif %}
+		});	
+	</script>
+

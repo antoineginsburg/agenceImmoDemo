@@ -1,0 +1,14 @@
+{# src/AG/AgencimmoBundle/Resources/views/Immo/edit.html.twig #}
+{% extends "AGAgenceimmoBundle::layout.html.twig" %}
+
+{% block title %}
+  Ajouter un bien - {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+<h2>Modification du bien n° {{id}}</h2>
+
+  {{ include("AGAgenceimmoBundle:Immo:form.html.twig") }}
+  
+{% endblock %}

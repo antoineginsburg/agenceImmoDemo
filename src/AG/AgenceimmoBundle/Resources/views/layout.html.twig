@@ -1,0 +1,124 @@
+{# src/AG/AgenceimmoBundle/Resources/views/layout.html.twig #}
+
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8"/>
+		<title>{% block title %}Agence Immo{% endblock %}</title>
+		
+		<script src="{{asset('bundles/agagenceimmo/js/jquery.js')}}"></script>
+		<script src="{{asset('bundles/agagenceimmo/js/bootstrap.min.js')}}"></script>
+		<link rel="stylesheet" href="{{asset('bundles/agagenceimmo/css/bootstrap.min.css')}}"/>
+		<style type="text/css">
+			body{
+		   background-color: #E8E9E9;
+		   }
+		   .miniature:hover{
+			cursor: pointer;
+		}
+		</style>
+
+		
+			<script type="text/javascript">
+	function recherche(){
+		var search =document.forms[0].getElementsByTagName("input")[0].value;
+		if(search.trim()==""){
+			alert("Saisissez une chaine non vide pour lancer la recherche");
+			document.forms[0].getElementsByTagName("input")[0].focus();
+		}else{
+			//suppression des + dans la chaine de caractère recherchée
+			search=search.replace('+','');
+			//suppression des espaces en debut et fin de chaine
+			search=search.trim();
+			//regex qui remplace les espaces par des + dans la chaine recherchée
+			search= search.replace(/\s{1,}/g, '+');
+			var route = "{{ path('ag_agenceimmo_searchresult', {'search':'search_value'}) }}";
+			route= route.replace("search_value",search);
+			document.forms[0].action=route;
+			document.forms[0].submit();
+		}
+	}
+	</script>
+
+	</head>
+	
+	<body>
+	
+	<nav class="navbar navbar-default navbar-static-top">
+		<div class="container-fluid">
+			<!-- agence immo link plus toogle (pour les mobiles ou petite fenêtre la barre de menu s'affiche en menu déroulant)-->
+			<div class="navbar-header">
+				<!-- toogle -->
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<!--brand-->
+				<a class="navbar-brand" href="{{ path('ag_agenceimmo_accueil') }}">Agence Immo</a>
+			</div>
+	
+			<!-- links and search form-->
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav">
+					<!-- rent and buy links in drop down menu-->
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Nos offres <span class="caret"></span></a>
+						<ul class="dropdown-menu" role="menu">
+							<li><a href="{{ path('ag_agenceimmo_list',{'type': 'location'}) }}">Location</a></li>
+							<li><a href="{{ path('ag_agenceimmo_list',{'type': 'achat'}) }}">Achat</a></li>
+						</ul>
+					</li>
+					<!-- add an offer-->
+					{% if app.user is not null and is_granted('ROLE_ADMIN') %}
+						<li><a href="{{ path('ag_agenceimmo_add')}}">Ajouter une offre</a></li>
+					{% endif %}
+				</ul>
+		 
+				<!--search form -->
+				<form class="navbar-form navbar-left" id="searchform">
+					<div class="form-group">
+						<input id="searchtext" type="text" class="form-control"  />
+					</div>
+					<a href="javascript: recherche()" class="btn btn-default" >Rechercher</a>
+				</form>
+		 
+				<!--connexion link-->
+				<ul class="nav navbar-nav navbar-right">
+					{%if is_granted('IS_AUTHENTICATED_REMEMBERED')%}
+						<li><a href="#">Vous êtes connecté(e) en tant que <b>{{app.user.username}}</b></a></li>
+						<li><a href="{{ path('fos_user_security_logout')}}">Déconnexion</a></li>
+					{%else%}
+		<!--			<li class="dropdown"> -->
+		<!--				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;S'identifier <span class="caret"></span></a> -->
+		<!--				<ul class="dropdown-menu" role="menu"> -->
+								<li><a href="{{ path('fos_user_security_login')}}">Connexion</a></li>
+		<!--					<li><a href="{{ path('fos_user_registration_register')}}">Inscription</a></li> -->
+		<!--				</ul> -->
+		<!--			</li> -->
+					{%endif%}
+				</ul>
+			</div><!-- /.navbar-collapse -->
+		</div><!-- /.container-fluid -->
+	</nav>
+	
+	<!-- content of other template which inherit this template (for example: add.html.twig)-->
+	<div id="content" class="col-md-12">
+        {% block body %}
+	    {% endblock %}
+    </div>
+	<script>
+	$('#searchform').first().submit(function(){
+		if($("#searchtext").val().trim()=="")
+		{
+			alert("Saisissez une chaine non vide pour lancer la recherche");
+			return false;
+		}else{
+			recherche();
+		}
+	});
+	</script>
+	</body>	
+</html>

@@ -1,0 +1,15 @@
+{# src/AG/AgencimmoBundle/Resources/views/Immo/list.html.twig #}
+{% extends "AGAgenceimmoBundle::layout.html.twig" %}
+
+{% block title %}
+  Ajouter un bien - {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+
+<h3>Formulaire d'ajout d'un bien immobilier</h3>
+
+  {{ include("AGAgenceimmoBundle:Immo:form.html.twig") }}
+	
+{% endblock %}

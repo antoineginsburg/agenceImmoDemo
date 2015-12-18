@@ -1,0 +1,137 @@
+{# src/AG/AgencimmoBundle/Resources/views/Immo/view.html.twig #}
+{% extends "AGAgenceimmoBundle::layout.html.twig" %}
+
+{% block title %}
+	Bien N°{{immobilier.id}} - {{ parent() }}
+
+
+{% endblock %}
+
+{% block body %}
+		
+	<div class="container">
+		<h2> Descriptif du bien numéro {{immobilier.id}}</h2>
+
+		{% for flashMessage in app.session.flashbag.get('notice') %}
+			{%if loop.first %}
+				<div class="alert alert-info">
+			{%endif%}
+				{{ flashMessage }}
+			{%if loop.last %}
+				</div>
+			{%endif%}
+		{% endfor %}
+
+		<h4>{{immobilier.nbPieces}} pièces à {%if immobilier.location %}louer{%else%}vendre{%endif%} de {{ immobilier.surface }} m²</h4><br>
+		{%if(immobilier.images.count>0)%}
+			<div class="row">
+				<div class="col-md-12">
+					{% for img in immobilier.images %}
+							<img src="{{asset('bundles/agagenceimmo/images/'~img.url)}}" alt="{{img.alt}}" width="70px" height="70px" class="miniature">
+					{% endfor %}
+				</div>
+			</div>
+			<br>
+			<div class="row">
+				<div class="col-md-12">
+					<img id="grand" src="{{asset('bundles/agagenceimmo/images/'~immobilier.images[0].url)}}" alt="{{immobilier.images[0].alt}}" width="400px" class="img-thumbnail">
+				</div>
+			</div>
+			<br>
+		{% endif %}
+		{% if app.user is not null and is_granted('ROLE_ADMIN') %}
+			<div class="row">
+				{%if(immobilier.images.count>0)%}
+					<div class="col-md-2">
+						<a href="{{ path('ag_agenceimmo_suppr_img', {'id': immobilier.id})}}" class="btn btn-default">
+							<i class="glyphicon glyphicon-edit"></i>
+							Supprimer images
+						</a>
+					</div>
+				{% endif %}
+				<div class="col-md-2">
+					<a href="{{ path('ag_agenceimmo_ajout_img', {'id': immobilier.id})}}" class="btn btn-default">
+						<i class="glyphicon glyphicon-edit"></i>
+						Ajouter images
+					</a>
+				</div>
+			</div>
+		{% endif %}
+		<br>
+		<div class="row">
+			<div class="col-md-12">
+				<ul>
+					<li><b>Date de mise en ligne:</b> {{ immobilier.dateMel|date('d/m/Y') }}</li>
+					<li><b>Type:</b> {{ immobilier.typeImmobilier.denomination }}</li>
+					<li><b>Dénomination:</b> {{ immobilier.denomination }}</li>
+					<li><b>Surface:</b> {{ immobilier.surface }} m²</li>
+					<li><b>Nombre de pièce:</b> {{ immobilier.nbPieces }}</li>
+					<li><b>Année de construction:</b> {{ immobilier.annee }}</li>
+					{%if(immobilier.location)%}
+						<li><b>Loyer:</b> {{ immobilier.prix }} €</li>
+					{%else%}
+						<li><b>Prix de vente:</b> {{ immobilier.prix }} €</li>
+					{%endif%}
+				</ul>
+			</div>
+		</div>
+		<br>
+		<div class="row">
+			<div class="col-md-2">
+				{%if(immobilier.location)%}
+					<a href="{{ path('ag_agenceimmo_list',{'type': 'location'}) }}" class="btn btn-default">
+						<i class="glyphicon glyphicon-chevron-left"></i>
+						Retour à la liste
+					</a>
+				{%else%}
+					<a href="{{ path('ag_agenceimmo_list',{'type': 'achat'}) }}" class="btn btn-default">
+						<i class="glyphicon glyphicon-chevron-left"></i>
+						Retour à la liste
+					</a>
+				{%endif%}
+			</div>
+			{% if app.user is not null and is_granted('ROLE_ADMIN') %}
+				<div class="col-md-2">
+					<a href="{{ path('ag_agenceimmo_edit', {'id': immobilier.id})}}" class="btn btn-default">
+						<i class="glyphicon glyphicon-edit"></i>
+						Modifier
+					</a>
+				</div>
+				<div class="col-md-1">
+					<a href="{{ path('ag_agenceimmo_delete', {'id': immobilier.id})}}" class="btn btn-danger">
+						<i class="glyphicon glyphicon-trash"></i>
+						Supprimer
+					</a>
+				</div>
+			{% endif %}
+		</div>
+		<br>
+	</div>
+	
+	<script>
+		$(function() {
+		
+			$('img').css('display','none');
+			$('img').first().css("border","3px grey solid");
+			$('img').first().css("border-radius","3px");
+			$('img').first().fadeIn(200, function showNextOne() {
+					if($(this).next('img').attr('src')==undefined){
+						$('#grand').fadeIn(200);
+					}
+					$(this).next('img').fadeIn(200, showNextOne);
+			});
+			
+			$('.miniature').click(function() {
+			  var src = $(this).attr('src');
+			  $('#grand').attr('src',src);
+			});  
+			$('.miniature').mouseover(function(){
+					$(this).css("border","3px grey solid");
+					$(this).css("border-radius","3px");
+			});
+			$('.miniature').mouseout(function(){
+					$(this).css("border","0px");;
+			});
+		  });
+	</script>
+{% endblock %}

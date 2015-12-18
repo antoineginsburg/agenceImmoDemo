@@ -1,0 +1,40 @@
+{# src/AG/AgencimmoBundle/Resources/views/Immo/accueil.html.twig #}
+{% extends "AGAgenceimmoBundle::layout.html.twig" %}
+
+{% block title %}
+  Bienvenue - {{ parent() }}
+{% endblock %}
+
+{% block body %}
+
+	
+		{% for img in imgs %}
+			<img id="img{{loop.index}}" src="{{asset('bundles/agagenceimmo/images/'~img.url)}}" alt="{{img.alt}}" width="98%" height="700px">
+		{% endfor %}
+	<script>
+	$(function(){
+		$('h2').css('text-align','center');
+		$('img').css("position","absolute");
+		$('img').css("display","none");
+		$('img').css('border','2px solid grey');
+		$('img').css('border-radius','10px');
+		var i=0;
+		var taille = $('img').size();
+		affiche();
+
+		function affiche() {
+		  i++;
+		  if (i==1) precedent = '#img'+taille
+			   else precedent = '#img' + (i-1);
+		  var actuel = '#img' + i;
+		  $(precedent).fadeOut(7000);
+		  $(actuel).fadeIn(7000);
+		  if (i==taille) i=0;          
+		}
+
+    setInterval(affiche, 7000);
+
+		
+	});
+	</script>
+{% endblock %}

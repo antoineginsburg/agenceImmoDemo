@@ -1,0 +1,61 @@
+{# src/AG/AgencimmoBundle/Resources/views/Immo/searchResult.html.twig #}
+{% extends "AGAgenceimmoBundle::layout.html.twig" %}
+
+{% block title %}
+	Resultat recherche - {{ parent() }}
+
+
+{% endblock %}
+
+{% block body %}
+	
+	<script type="text/javascript">
+		function DoNav(url)
+		{
+		   document.location.href = url;
+		}
+	</script>
+	<style type="text/css">
+		.table-hover>tbody>tr:hover>td {
+			background-color: #d2d2cf;
+			cursor:pointer;
+	</style>	
+	<div class="container">
+
+		{% if listImmobiliers is empty %}
+			<h3>Aucun resultat correspondant à la recherche : {{mots}}</h3>
+		{% else %}
+
+		<h3>Liste des biens correspondant à la recherche : {{mots}}</h2>
+			
+		<br>
+		
+			<table class="table table-hover table-striped">
+				<thead>
+					<tr>
+						<th>Date de mise en ligne</th>
+						<th>Type de bien</th>
+						<th>Descriptif</th>
+						<th>Surface</th>
+						<th>Nombre de pièces</th>
+						<th>Année de construction</th>
+						<th>Loyer / Prix de vente</th>
+					</tr>
+				</thead>
+				{% for immobilier in listImmobiliers %}
+						<tr onclick="DoNav('{{ path('ag_agenceimmo_view', {'id': immobilier.id}) }}')">
+							<td>{{ immobilier.dateMel|date('d/m/Y') }}</td>
+							<td>{{ immobilier.typeImmobilier.denomination }}</td>
+							<td>{{ immobilier.Denomination20FirstCaract }}</td>
+							<td>{{ immobilier.surface }} m²</td>
+							<td>{{ immobilier.nbPieces }}</td>
+							<td>{{ immobilier.annee }}</td>
+							<td>{{ immobilier.prix }} €</td>
+						</tr>
+				{% endfor %}
+			</table>
+		{% endif %}
+	</div>	
+	
+
+{% endblock %}

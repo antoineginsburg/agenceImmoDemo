@@ -1,0 +1,72 @@
+{# src/AG/AgencimmoBundle/Resources/views/Immo/supprimg.html.twig #}
+{% extends "AGAgenceimmoBundle::layout.html.twig" %}
+
+{% block title %}
+	Liste des biens - {{ parent() }}
+
+
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<h2> Images à supprimer du bien {{immobilier.id}}</h2>
+			</div>
+		</div>
+		{% for flashMessage in app.session.flashbag.get('notice') %}
+			{%if loop.first %}
+				<div class="alert alert-info">
+			{%endif%}
+			{{ flashMessage }}
+			{%if loop.last %}
+				</div>
+			{%endif%}
+		{% endfor %}
+		<form action="{{ path("ag_agenceimmo_suppr_img", {'id': immobilier.id}) }}" method="post">
+		<input type="hidden" name="validation" value="validation" /><br><br>
+		<div class="row">
+		{% for img in immobilier.images %}
+			{% if (loop.index-1) is divisible by(4)  %}
+				</div>
+				<div class="row">
+			{% endif %}
+			<div class="col-md-3">
+				<img id="{{img.id}}" src="{{asset('bundles/agagenceimmo/images/'~img.url)}}" alt="{{img.alt}}" width="200px"  class="img-thumbnail">
+				&nbsp;<input type="checkbox" name="{{img.id}}" />
+			</div>
+		{% endfor %}
+		</div>
+		<br><br>
+		<div class="row">
+			<div class="col-md-2">
+				<a href="{{ path('ag_agenceimmo_view', {'id': immobilier.id}) }}" class="btn btn-default">
+							<i class="glyphicon glyphicon-chevron-left"></i>
+							retour au bien
+				</a>
+			</div>
+			<div class="col-md-2">
+				<input type="submit" name="valider" value="supprimer" class="btn btn-danger"/>
+			</div>
+		</div>
+		</form>
+	</div>
+	<script>
+		$(function(){
+			$('input').each(function(){
+				if($(this).attr('type')=="checkbox"){
+					$(this).click(function(){
+							if($("#"+$(this).attr("name")+"").css("background-color")=="rgb(255, 0, 0)")
+							{
+								$("#"+$(this).attr("name")+"").css("background-color","white");
+								$("#"+$(this).attr("name")).fadeTo(500,1);
+							}else{
+								$("#"+$(this).attr("name")+"").css("background-color","red");
+								$("#"+$(this).attr("name")).fadeTo(500,0.3);
+							}
+						});
+				}
+			});
+		});
+	</script>
+{% endblock %}

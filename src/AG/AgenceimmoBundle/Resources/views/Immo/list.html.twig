@@ -1,0 +1,71 @@
+{# src/AG/AgencimmoBundle/Resources/views/Immo/list.html.twig #}
+{% extends "AGAgenceimmoBundle::layout.html.twig" %}
+
+{% block title %}
+	Liste des biens - {{ parent() }}
+
+
+{% endblock %}
+
+{% block body %}
+	
+	<script type="text/javascript">
+		function DoNav(url)
+		{
+		   document.location.href = url;
+		}
+	</script>
+	<style type="text/css">
+		.table-hover>tbody>tr:hover>td {
+			background-color: #d2d2cf;
+			cursor:pointer;
+	</style>	
+	<div class="container">
+		{%if(type=="location")%}
+			<h2>Liste des biens locatifs</h2>
+		{%else%}
+			<h2>Liste des biens à l'achat</h2>
+		{%endif%}
+		{% for flashMessage in app.session.flashbag.get('notice') %}
+			{%if loop.first %}
+				<div class="alert alert-info">
+			{%endif%}
+				{{ flashMessage }}
+			{%if loop.last %}
+				</div>
+			{%endif%}
+			
+		{% endfor %}
+		<br>
+		<table class="table table-hover table-striped">
+			<thead>
+				<tr>
+					<th>Date de mise en ligne</th>
+					<th>Type de bien</th>
+					<th>Descriptif</th>
+					<th>Surface</th>
+					<th>Nombre de pièces</th>
+					<th>Année de construction</th>
+					{%if(type=="location")%}
+						<th>Loyer</h2>
+					{%else%}
+						<th>Prix de vente</th>
+					{%endif%}
+				</tr>
+			</thead>
+			{% for immobilier in listImmobiliers %}
+					<tr onclick="DoNav('{{ path('ag_agenceimmo_view', {'id': immobilier.id}) }}')">
+						<td>{{ immobilier.dateMel|date('d/m/Y') }}</td>
+						<td>{{ immobilier.typeImmobilier.denomination }}</td>
+						<td>{{ immobilier.Denomination20FirstCaract }}</td>
+						<td>{{ immobilier.surface }} m²</td>
+						<td>{{ immobilier.nbPieces }}</td>
+						<td>{{ immobilier.annee }}</td>
+						<td>{{ immobilier.prix }} €</td>
+					</tr>
+			{% endfor %}
+		</table>
+	</div>	
+	
+
+{% endblock %}

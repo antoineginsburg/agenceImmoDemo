@@ -1,0 +1,37 @@
+security:
+
+    encoders: 
+        AG\UserBundle\Entity\User: sha512
+
+    role_hierarchy:
+        ROLE_ADMIN:       ROLE_USER
+        ROLE_SUPER_ADMIN: [ROLE_USER,ROLE_ADMIN,ROLE_ALLOWED_TO_SWITCH]
+
+    providers:
+        main:
+            id: fos_user.user_provider.username
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt|error)|css|images|js)/
+            security: false
+
+        main:
+            pattern: ^/
+            anonymous: true
+            provider: main
+            form_login:
+                login_path: fos_user_security_login
+                check_path: fos_user_security_check
+            logout:
+                path: fos_user_security_logout
+                target: /agenceimmo	
+            remember_me:
+                #%secret% est un paramètre de parameter.yml			
+                key: %secret% 
+                
+
+    access_control:
+        - { path: ^/agenceimmo/add, roles: ROLE_ADMIN }
+        - { path: ^/agenceimmo/edit, roles: ROLE_ADMIN }
+        - { path: ^/agenceimmo/delete, roles: ROLE_ADMIN }

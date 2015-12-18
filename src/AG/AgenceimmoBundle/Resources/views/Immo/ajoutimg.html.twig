@@ -1,0 +1,44 @@
+{# src/AG/AgencimmoBundle/Resources/views/Immo/supprimg.html.twig #}
+{% extends "AGAgenceimmoBundle::layout.html.twig" %}
+
+{% block title %}
+	Ajouter image - {{ parent() }}
+
+
+{% endblock %}
+
+{% block body %}
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<h2> Ajouter une image au  bien {{id}}</h2>
+			</div>
+		</div>
+		{% for flashMessage in app.session.flashbag.get('notice') %}
+			{%if loop.first %}
+				<div class="alert alert-info">
+			{%endif%}
+			{{ flashMessage }}
+			{%if loop.last %}
+				</div>
+			{%endif%}
+		{% endfor %}
+		<div class="well">
+			{{ form(form)}}
+		</div>
+		<script>
+		$(function(){
+			//suppression du label File
+			$('label').remove();
+			//on centre dans un tableau le bouton parcourir
+			var contenu = $('#form_file').parent().html();
+			$('#form_file').parent().html('<table border=0 width=100%><tbody><tr><td align=center>'+contenu+'</td></tr></tbody></table><br/>');
+			//on ajoute une classe bootstrap à notre bouton ajouter pour le mettre en forme
+			$('#form_Ajouter').attr('class','btn btn-default');
+			//on centre dans un tableau le bouton Ajouter
+			var contenu = $('#form_Ajouter').parent().html();
+			$('#form_Ajouter').parent().html('<table border=0 width=100%><tbody><tr><td align=center>'+contenu+'</td></tr></tbody></table>');
+			
+		});
+		</script>
+{% endblock %}
